@@ -89,7 +89,7 @@ class ItemListTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let deleteAction = UITableViewRowAction(style: .destructive, title: "刪除") {
+        let deleteAction = UITableViewRowAction(style: .destructive, title: "delete") {
             (action, indexPath) in
             self.itemArray.remove(at: indexPath.row)
             let arrayToSave = self.itemArray as NSArray

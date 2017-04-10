@@ -28,7 +28,11 @@ class ItemDetailViewController: UIViewController {
                                                selector: #selector(getItem(noti:)),
                                                name: notificationName,
                                                object: nil)
-        
+        let editNotificationName = Notification.Name("editItem")
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(getItem(noti:)),
+                                               name: editNotificationName,
+                                               object: nil)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -47,6 +51,11 @@ class ItemDetailViewController: UIViewController {
         case "gotoDetail":
             itemArray = noti.userInfo!["item"] as! [Dictionary<String, String>]
             indexPath = noti.userInfo!["indexPath"] as! IndexPath
+            let itemDict = itemArray[indexPath.row]
+            detailNameLabel.text = itemDict["name"]
+            detailDescLabel.text = itemDict["desc"]
+        case "editItem":
+            itemArray = noti.userInfo!["item"] as! [Dictionary<String, String>]
             let itemDict = itemArray[indexPath.row]
             detailNameLabel.text = itemDict["name"]
             detailDescLabel.text = itemDict["desc"]
