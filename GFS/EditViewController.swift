@@ -8,7 +8,7 @@
 
 import UIKit
 
-class EditViewController: UIViewController {
+class EditViewController: UIViewController,UIImagePickerControllerDelegate,UINavigationControllerDelegate {
 
     var indexPath: IndexPath!
     var itemArray: [Dictionary<String, String>]! // e.g. [["name":"apple","desc":"fruit"],
@@ -16,7 +16,8 @@ class EditViewController: UIViewController {
     
     @IBOutlet weak var editNameTextField: UITextField!
     @IBOutlet weak var editDescTextField: UITextField!
-    
+    @IBOutlet weak var editView: UIView!
+    @IBOutlet weak var editImage: UIImageView!
     
     @IBAction func editDoneButton(_ sender: UIBarButtonItem) {
         
@@ -42,6 +43,19 @@ class EditViewController: UIViewController {
         let arrayToSave = itemArray as NSArray
         arrayToSave.write(toFile: path, atomically: true)
         
+        //***********************************************************************************
+        //to save picture , Data type
+        let imagePath = NSHomeDirectory() + "/Documents/" + "\(editNameTextField.text!).data"
+        let imageURL = URL(fileURLWithPath: imagePath) //路徑轉URL
+        //data transformation to picture
+        let imageToSave = UIImageJPEGRepresentation(editImage.image!, 1.0)
+        do{
+            try imageToSave?.write(to: imageURL)
+        }catch{
+            print(error.localizedDescription)
+        }
+        //***********************************************************************************
+        
         //post notification
         let notificationName = Notification.Name("editItem")
         NotificationCenter.default.post(name: notificationName,
@@ -54,12 +68,27 @@ class EditViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        //tap on picture zone
+        editView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(callAlbum)))
+        
         //observe the notification
         let editNotificationName = Notification.Name("gotoEdit")
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(getItem(noti:)),
                                                name: editNotificationName,
                                                object: nil)
+    }
+    
+    //UIImagePickerViewController <need to be make>
+    func callAlbum(){
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        self.show(imagePicker, sender: self)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        editImage.image = info[UIImagePickerControllerOriginalImage] as? UIImage
+        self.dismiss(animated: true, completion: nil)
     }
     
     //do what while receiving notification
@@ -69,6 +98,11 @@ class EditViewController: UIViewController {
         let itemDict = itemArray[indexPath.row]
         editNameTextField.text = itemDict["name"]
         editDescTextField.text = itemDict["desc"]
+        
+        //take out pictures to display
+        let imagePath = NSHomeDirectory() + "/Documents/" + "\(editNameTextField.text!).data"
+        let loadedImage = UIImage(contentsOfFile: imagePath)
+        editImage.image = loadedImage
     }
     
     override func didReceiveMemoryWarning() {

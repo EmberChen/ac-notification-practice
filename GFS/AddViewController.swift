@@ -8,11 +8,14 @@
 
 import UIKit
 
-class AddViewController: UIViewController {
+class AddViewController: UIViewController,UIImagePickerControllerDelegate,UINavigationControllerDelegate {
 
     
     @IBOutlet weak var addNameTextField: UITextField!
     @IBOutlet weak var addDescTextField: UITextField!
+    @IBOutlet weak var addImage: UIImageView!
+    @IBOutlet weak var addView: UIView!
+    
     
     //prepare for catch data
     var itemArray: [Dictionary<String, String>] = []
@@ -40,6 +43,19 @@ class AddViewController: UIViewController {
         let arrayToSave = itemArray as NSArray
         arrayToSave.write(toFile: path, atomically: true)
         
+        //***********************************************************************************
+        //to save picture , Data type
+        let imagePath = NSHomeDirectory() + "/Documents/" + "\(addNameTextField.text!).data"
+        let imageURL = URL(fileURLWithPath: imagePath) //路徑轉URL
+        //data transformation to picture
+        let imageToSave = UIImageJPEGRepresentation(addImage.image!, 1.0)
+        do{
+            try imageToSave?.write(to: imageURL)
+        }catch{
+            print(error.localizedDescription)
+        }
+        //***********************************************************************************
+        
         //post notification
         let notificationName = Notification.Name("addItem")
         NotificationCenter.default.post(name: notificationName,
@@ -49,9 +65,25 @@ class AddViewController: UIViewController {
         let _ = navigationController?.popViewController(animated: true)
     }
     
+    func callAlbum(){
+        let imagePicker = UIImagePickerController()
+    
+        //UIImagePickerControllerDelegate,UINavigationControllerDelegate
+        imagePicker.delegate = self
+    
+        self.show(imagePicker, sender: self)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        addImage.image = info[UIImagePickerControllerOriginalImage] as? UIImage
+        self.dismiss(animated: true, completion: nil)
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        addView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(callAlbum)))
         
         //get notification
         let notificationName = Notification.Name("gotoAdd")

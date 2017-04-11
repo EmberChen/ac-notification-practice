@@ -10,10 +10,12 @@ import UIKit
 
 class ItemDetailViewController: UIViewController {
 
-    
-    
     @IBOutlet weak var detailNameLabel: UILabel!
     @IBOutlet weak var detailDescLabel: UILabel!
+    @IBOutlet weak var detailImage: UIImageView!
+    
+    
+    
     
     var itemArray: [Dictionary<String, String>]!
     var indexPath: IndexPath!
@@ -54,11 +56,23 @@ class ItemDetailViewController: UIViewController {
             let itemDict = itemArray[indexPath.row]
             detailNameLabel.text = itemDict["name"]
             detailDescLabel.text = itemDict["desc"]
+            
+            //take out pictures to display
+            let imagePath = NSHomeDirectory() + "/Documents/" + "\(detailNameLabel.text!).data"
+            let loadedImage = UIImage(contentsOfFile: imagePath)
+            detailImage.image = loadedImage
+            
         case "editItem":
             itemArray = noti.userInfo!["item"] as! [Dictionary<String, String>]
             let itemDict = itemArray[indexPath.row]
             detailNameLabel.text = itemDict["name"]
             detailDescLabel.text = itemDict["desc"]
+            
+            //take out pictures to display
+            let imagePath = NSHomeDirectory() + "/Documents/" + "\(detailNameLabel.text!).data"
+            let loadedImage = UIImage(contentsOfFile: imagePath)
+            detailImage.image = loadedImage
+
         default:
             break
         }
