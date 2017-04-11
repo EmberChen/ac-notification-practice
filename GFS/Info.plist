@@ -42,6 +42,6 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>需要從照片庫選出照片</string>
+	<string>Please tap &quot;OK&quot; for the next step.</string>
 </dict>
 </plist>
