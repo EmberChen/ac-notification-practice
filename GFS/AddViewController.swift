@@ -23,12 +23,12 @@ class AddViewController: UIViewController,UIImagePickerControllerDelegate,UINavi
     @IBAction func addDoneButton(_ sender: UIBarButtonItem) {
         //error handling
         guard addNameTextField.text != "" else {
-            present(alerter.alert(message: "\n Please enter name!"), animated: true, completion: nil)
+            present(alerter.alert(message: "\n Please enter name!!"), animated: true, completion: nil)
             return
         }
         
         guard addDescTextField.text != "" else {
-            present(alerter.alert(message: "\n Please enter description!"), animated: true, completion: nil)
+            present(alerter.alert(message: "\n Please enter description!!"), animated: true, completion: nil)
             return
         }
         
